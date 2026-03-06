@@ -22,7 +22,11 @@ export function SocketProvider({ children }) {
       return;
     }
 
+    const userId = user?.id || user?._id;
+    if (!userId) return;
+
     const socket = io(SERVER_URL, {
+      query: { userId },
       withCredentials: true,
       extraHeaders: { "ngrok-skip-browser-warning": "true" },
     });
