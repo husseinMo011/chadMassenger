@@ -8,7 +8,6 @@ export default function ProfileSetup() {
   const navigate = useNavigate();
   const [firstName, setFirstName] = useState(user?.firstName || "");
   const [lastName, setLastName] = useState(user?.lastName || "");
-  const [color, setColor] = useState(user?.color || "#00ff62");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -22,13 +21,11 @@ export default function ProfileSetup() {
     setError("");
 
     try {
-      // Try with only required fields (no color) to avoid 500 errors
-      await updateProfile(firstName.trim(), lastName.trim(), null);
+      await updateProfile(firstName.trim(), lastName.trim());
       navigate("/chat");
     } catch (err1) {
       console.error("Profile update attempt 1 failed:", err1);
 
-      // Second try: call the endpoint directly with only required fields
       try {
         await apiClient.post("/api/auth/update-profile", {
           firstName: firstName.trim(),
@@ -58,21 +55,16 @@ export default function ProfileSetup() {
     navigate("/chat");
   };
 
-  const colors = [
-    "#00ff62", "#ff6b35", "#3b82f6", "#f59e0b",
-    "#ec4899", "#8b5cf6", "#06b6d4", "#ef4444",
-  ];
-
   return (
     <div style={styles.bg}>
       <div style={{ ...styles.card, animation: "slideUp 0.6s ease" }}>
         <div style={styles.header}>
           <div style={{
             width: 64, height: 64, borderRadius: "50%",
-            background: `linear-gradient(135deg, ${color}, ${color}88)`,
+            background: "linear-gradient(135deg, #00ff62, #00ff6288)",
             display: "flex", alignItems: "center", justifyContent: "center",
             margin: "0 auto 12px", fontSize: 28, fontWeight: 700, color: "#fff",
-            boxShadow: `0 4px 20px ${color}44`,
+            boxShadow: "0 4px 20px #00ff6244",
           }}>
             {(firstName?.[0] || "?").toUpperCase()}
           </div>
@@ -93,20 +85,6 @@ export default function ProfileSetup() {
             <input type="text" value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               placeholder="Last name" style={styles.input} required />
-          </div>
-
-          <div style={styles.inputGroup}>
-            <label style={styles.label}>Avatar Color</label>
-            <div style={styles.colorRow}>
-              {colors.map((c) => (
-                <button key={c} type="button" onClick={() => setColor(c)} style={{
-                  width: 32, height: 32, borderRadius: "50%", background: c,
-                  border: color === c ? "3px solid #fff" : "3px solid transparent",
-                  cursor: "pointer", boxShadow: color === c ? `0 0 12px ${c}` : "none",
-                  transition: "all 0.2s",
-                }} />
-              ))}
-            </div>
           </div>
 
           {error && (
@@ -156,7 +134,6 @@ const styles = {
     padding: "0 14px", fontSize: 14, color: "#fff", outline: "none",
     fontFamily: "'Quicksand', sans-serif",
   },
-  colorRow: { display: "flex", gap: 8, flexWrap: "wrap" },
   errorBanner: {
     background: "rgba(255,70,70,0.1)", border: "1px solid rgba(255,70,70,0.25)",
     borderRadius: 10, padding: "10px 14px", fontSize: 13, color: "#ff6b6b",

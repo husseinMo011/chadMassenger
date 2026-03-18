@@ -27,7 +27,7 @@ export const getUserInfo = async () => {
 // POST /api/auth/update-profile
 export const updateProfile = async (firstName, lastName, color) => {
   const payload = { firstName, lastName };
-  if (color && color !== "#00ff62") payload.color = color; // only send if non-default
+  if (color) payload.color = color;
   const response = await apiClient.post("/api/auth/update-profile", payload);
   return response.data;
 };

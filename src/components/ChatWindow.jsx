@@ -135,7 +135,7 @@ export default function ChatWindow() {
     return unsub;
   }, [userId, addMessageListener, scrollToBottom, refreshContacts, setLastMessage, incrementUnread]);
 
-  // Send message
+  // Send text message
   const handleSend = () => {
     if (!input.trim() || !activeContact?._id) return;
     const text = input.trim();
@@ -148,7 +148,6 @@ export default function ChatWindow() {
     emitMessage(userId, activeContact._id, text, "text");
 
     // After a short delay, reload from REST API to confirm
-    // This is the bulletproof fallback — works even if socket echo fails
     const contactId = activeContact._id;
     setTimeout(() => reloadMessages(contactId), 500);
   };
